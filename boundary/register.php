@@ -28,25 +28,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Register</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/register.css">
 </head>
 <body>
-    <h2>Register</h2>
+<div class="register-container">
+    <a href="../index.php" class="back-btn">← Back to Home</a>
 
-    <?php if ($message): ?>
-        <p><?php echo $message; ?></p>
-    <?php endif; ?>
+    <div class="register-card">
+        <h2>Sign Up</h2>
 
-    <form method="post">
-        Email: <input type="email" name="email" required><br><br>
-        Password: <input type="password" name="password" required><br><br>
-        Account Type:
-        <select name="user_type" required>
-            <option value="C">Cleaner</option>
-            <option value="H">Homeowner</option>
-        </select><br><br>
-        <button type="submit">Register</button>
-    </form>
+        <?php if ($message): ?>
+            <div class="message"><?php echo $message; ?></div>
+        <?php endif; ?>
 
-    <p>Already have an account? <a href="login.php">Login</a></p>
+        <form method="post">
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <select name="user_type" required>
+                <option value="" disabled selected>Select Role</option>
+                <option value="C">Cleaner</option>
+                <option value="H">Homeowner</option>
+            </select>
+            <button type="submit" class="btn-submit">Create Account</button>
+        </form>
+
+        <a href="login.php" class="login-link">Already have an account? Login</a>
+    </div>
+</div>
+
 </body>
 </html>

@@ -40,23 +40,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
-    <h2>Login</h2>
+    <div class="login-container">
+        <a href="../index.php" class="back-btn">← Back to Home</a>
 
-    <?php if ($message): ?>
-        <p><?php echo $message; ?></p>
-    <?php endif; ?>
+        <div class="login-card">
+            <h2>Log In</h2>
 
-    <form method="post">
-        Email: <input type="email" name="email" required><br><br>
-        Password: <input type="password" name="password" required><br><br>
-        <button type="submit">Login</button>
-    </form>
+            <?php if ($message): ?>
+                <div class="error"><?php echo $message; ?></div>
+            <?php endif; ?>
 
-    <p>Don't have an account? <a href="register.php">Register</a></p>
+            <form method="post">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit" class="btn-submit">Log In</button>
+                <a href="register.php" class="register-link">Don’t have an account? Register</a>
+            </form>
+
+            <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+    </div>
 </body>
 </html>
