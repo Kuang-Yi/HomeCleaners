@@ -19,10 +19,11 @@ class CleanerController {
         return Service::getByCleaner($pdo, $cleaner_id);
     }
 
-    public static function getServiceById($cleaner_id, $service_id) {
-        global $pdo;
-        return Service::getById($pdo, $service_id, $cleaner_id);
+    public static function getServiceById($service_id, $cleaner_id) {
+    global $pdo;
+    return Service::getById($pdo, $service_id, $cleaner_id);
     }
+
 
     public static function updateService($cleaner_id, $service_id, $title, $desc, $pricing_type, $price) {
         global $pdo;
@@ -37,6 +38,11 @@ class CleanerController {
 	public static function addService($cleaner_id, $category_id, $title, $description, $pricing_type, $price) {
     global $pdo;
     return Service::create($pdo, $cleaner_id, $category_id, $title, $description, $pricing_type, $price);
-}
+    }
+
+    public static function deleteService($service_id, $cleaner_id) {
+    global $pdo;
+    return Service::delete($pdo, $service_id, $cleaner_id);
+    }
 
 }

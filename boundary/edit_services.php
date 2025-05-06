@@ -83,6 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <button type="submit" class="btn btn-green">Update</button>
         </form>
+		
+		<a href="manage_services.php">Return to Services</a>
+		
     </main>
 </div>
 </body>

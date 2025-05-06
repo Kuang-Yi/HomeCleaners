@@ -17,7 +17,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'P') {
 
     <ul>
         <li><a href="manage_categories.php">Manage Cleaning Categories</a></li>
-        <li><a href="#">View Reports</a> (coming soon)</li>
+        <li><a href="generate_report.php">View Reports</a></li>
     </ul>
 
     <p><a href="../logout.php">Logout</a></p>

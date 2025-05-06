@@ -15,15 +15,17 @@ class Service {
 
     // Cleaner: Get a specific service by ID and cleaner
     public static function getById($pdo, $service_id, $cleaner_id) {
-        $stmt = $pdo->prepare("
-            SELECT s.*, c.name AS category_name
-            FROM services s
-            JOIN categories c ON s.category_id = c.id
-            WHERE s.id = ? AND s.cleaner_id = ?
-        ");
-        $stmt->execute([$service_id, $cleaner_id]);
-        return $stmt->fetch();
-    }
+    $stmt = $pdo->prepare("
+        SELECT s.*, c.name AS category_name
+        FROM services s
+        JOIN categories c ON s.category_id = c.id
+        WHERE s.id = ? AND s.cleaner_id = ?
+    ");
+    $stmt->execute([$service_id, $cleaner_id]);
+    return $stmt->fetch();
+}
+
+
 
     // Cleaner: Update service details
     public static function update($pdo, $service_id, $cleaner_id, $title, $description, $pricing_type, $price) {
@@ -92,6 +94,6 @@ class Service {
     ");
     $stmt->execute(['search' => '%' . $search . '%']);
     return $stmt->fetchAll();
-}
+    }
 
 }
