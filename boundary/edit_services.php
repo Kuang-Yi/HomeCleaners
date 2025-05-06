@@ -34,31 +34,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html>
-<head><title>Edit Service</title></head>
+<head>
+    <title>Edit Service</title>
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/edit_service.css">
+</head>
 <body>
-    <h2>Edit Service</h2>
-    <?php if (!empty($error)): ?><p><?= $error ?></p><?php endif; ?>
+<div class="dashboard-layout">
 
-    <form method="post">
-        <label>Title:</label><br>
-        <input type="text" name="title" value="<?= htmlspecialchars($service['title']) ?>" required><br><br>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">HomeCleaners</div>
+        <nav class="sidebar-links">
+            <a href="dashboard_cleaner.php">Dashboard</a>
+            <a href="add_service.php">Add Service</a>
+            <a href="manage_services.php" class="active">My Services</a>
+            <a href="view_cleaner_bookings.php">Bookings</a>
+            <a href="../logout.php" class="logout-link">Logout</a>
+        </nav>
+    </aside>
 
-        <label>Description:</label><br>
-        <textarea name="description" required><?= htmlspecialchars($service['description']) ?></textarea><br><br>
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <h2>Edit Service</h2>
 
-        <label>Pricing Type:</label><br>
-        <input type="radio" name="pricing_type" value="per_job" <?= $service['pricing_type'] === 'per_job' ? 'checked' : '' ?>> Per Job
-        <input type="radio" name="pricing_type" value="per_hour" <?= $service['pricing_type'] === 'per_hour' ? 'checked' : '' ?>> Per Hour<br><br>
+        <?php if (!empty($error)): ?>
+            <p class="error"><?= $error ?></p>
+        <?php endif; ?>
 
-        <label>Price:</label><br>
-        <input type="number" name="price" value="<?= $service['price'] ?>" step="0.01" required><br><br>
+        <form method="post" class="form-box">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" value="<?= htmlspecialchars($service['title']) ?>" required>
 
-        <label>Category:</label><br>
-        <input type="text" value="<?= htmlspecialchars($service['category_name']) ?>" readonly><br><br>
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" required><?= htmlspecialchars($service['description']) ?></textarea>
 
-        <button type="submit">Update</button>
-    </form>
+            <label>Pricing Type:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="pricing_type" value="per_job" <?= $service['pricing_type'] === 'per_job' ? 'checked' : '' ?>> Per Job</label>
+                <label><input type="radio" name="pricing_type" value="per_hour" <?= $service['pricing_type'] === 'per_hour' ? 'checked' : '' ?>> Per Hour</label>
+            </div>
 
-    <p><a href="manage_services.php">← Back</a></p>
+            <label for="price">Price (SGD):</label>
+            <input type="number" name="price" id="price" value="<?= $service['price'] ?>" step="0.01" required>
+
+            <label>Category:</label>
+            <input type="text" value="<?= htmlspecialchars($service['category_name']) ?>" readonly>
+
+            <button type="submit" class="btn btn-green">Update</button>
+        </form>
+    </main>
+</div>
 </body>
 </html>

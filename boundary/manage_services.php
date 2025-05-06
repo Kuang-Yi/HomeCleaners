@@ -72,7 +72,7 @@ $services = CleanerController::getCleanerServices($cleaner_id);
                                 <td><?= (int) $s['view_count'] ?></td>
                                 <td><?= (int) $s['shortlist_count'] ?></td>
                                 <td>
-                                    <a href="edit_service.php?id=<?= $s['id'] ?>">Edit</a> |
+                                    <a href="edit_services.php?id=<?= $s['id'] ?>">Edit</a> |
                                     <a href="delete_service.php?id=<?= $s['id'] ?>" onclick="return confirm('Delete this service?')">Delete</a>
                                 </td>
                             </tr>
