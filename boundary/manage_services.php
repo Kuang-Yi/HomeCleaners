@@ -16,44 +16,72 @@ $services = CleanerController::getCleanerServices($cleaner_id);
 <html>
 <head>
     <title>Manage My Services</title>
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/manage_services.css">
 </head>
 <body>
-    <h2>Manage My Services</h2>
+<div class="dashboard-layout">
 
-    <p><a href="add_service.php">+ Add New Service</a></p>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">HomeCleaners</div>
+        <nav class="sidebar-links">
+            <a href="dashboard_cleaner.php">Dashboard</a>
+            <a href="add_service.php">Add Service</a>
+            <a href="manage_services.php" class="active">My Services</a>
+            <a href="view_cleaner_bookings.php">Bookings</a>
+            <a href="../logout.php" class="logout-link">Logout</a>
+        </nav>
+    </aside>
 
-    <?php if (empty($services)): ?>
-        <p>You haven't listed any services yet.</p>
-    <?php else: ?>
-        <table border="1" cellpadding="10">
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Pricing</th>
-                <th>Price (SGD)</th>
-                <th>Views</th>
-                <th>Shortlists</th>
-                <th>Action</th>
-            </tr>
-            <?php foreach ($services as $s): ?>
-                <tr>
-                    <td><?= htmlspecialchars($s['title']) ?></td>
-                    <td><?= nl2br(htmlspecialchars($s['description'])) ?></td>
-                    <td><?= htmlspecialchars($s['category_name']) ?></td>
-                    <td><?= $s['pricing_type'] === 'per_job' ? 'Per Job' : 'Per Hour' ?></td>
-                    <td><?= number_format($s['price'], 2) ?></td>
-                    <td><?= (int) $s['view_count'] ?></td>
-                    <td><?= (int) $s['shortlist_count'] ?></td>
-                    <td>
-                        <a href="edit_service.php?id=<?= $s['id'] ?>">Edit</a> |
-                        <a href="delete_service.php?id=<?= $s['id'] ?>" onclick="return confirm('Delete this service?')">Delete</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php endif; ?>
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <h2>Manage My Services</h2>
 
-    <p><a href="dashboard_cleaner.php">← Back to Dashboard</a></p>
+        <div class="services-header">
+            <a href="add_service.php" class="add-link">+ Add New Service</a>
+        </div>
+
+        <?php if (empty($services)): ?>
+            <p>You haven't listed any services yet.</p>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table class="service-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Pricing</th>
+                            <th>Price (SGD)</th>
+                            <th>Views</th>
+                            <th>Shortlists</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($services as $i => $s): ?>
+                            <tr>
+                                <td><?= $i + 1 ?></td>
+                                <td><?= htmlspecialchars($s['title']) ?></td>
+                                <td><?= nl2br(htmlspecialchars($s['description'])) ?></td>
+                                <td><?= htmlspecialchars($s['category_name']) ?></td>
+                                <td><?= $s['pricing_type'] === 'per_job' ? 'Per Job' : 'Per Hour' ?></td>
+                                <td><?= number_format($s['price'], 2) ?></td>
+                                <td><?= (int) $s['view_count'] ?></td>
+                                <td><?= (int) $s['shortlist_count'] ?></td>
+                                <td>
+                                    <a href="edit_service.php?id=<?= $s['id'] ?>">Edit</a> |
+                                    <a href="delete_service.php?id=<?= $s['id'] ?>" onclick="return confirm('Delete this service?')">Delete</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </main>
+</div>
 </body>
 </html>

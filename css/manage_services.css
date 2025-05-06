@@ -1,0 +1,66 @@
+/* === Manage Services Page Specific === */
+
+.add-link {
+    background-color: #61B15A;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.add-link:hover {
+    background-color: #4c9649;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+/* Header above table */
+.services-header {
+    display: flex;
+    justify-content: flex-start;
+    margin: 25px 0 20px 0; /* top & bottom spacing */
+}
+
+.service-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.service-table th,
+.service-table td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.service-table th {
+    background-color: #f4f4f4;
+    font-weight: 600;
+}
+
+.service-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.service-table tr:hover {
+    background-color: #eef6ee;
+}
+
+.service-table td a {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.service-table td a:hover {
+    text-decoration: underline;
+}

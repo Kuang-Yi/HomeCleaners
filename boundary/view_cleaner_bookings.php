@@ -48,82 +48,117 @@ $filtered = array_filter($bookings, function ($b) use ($service_filter, $start_d
 <html>
 <head>
     <title>Cleaner - My Bookings</title>
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/view_cleaner_bookings.css">
 </head>
 <body>
-    <h2>My Bookings</h2>
+<div class="dashboard-layout">
 
-    <?php if (!empty($_GET['message'])): ?>
-        <p><?= htmlspecialchars($_GET['message']) ?></p>
-    <?php endif; ?>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">HomeCleaners</div>
+        <nav class="sidebar-links">
+            <a href="dashboard_cleaner.php">Dashboard</a>
+            <a href="add_service.php">Add Service</a>
+            <a href="manage_services.php">My Services</a>
+            <a href="view_cleaner_bookings.php" class="active">Bookings</a>
+            <a href="../logout.php" class="logout-link">Logout</a>
+        </nav>
+    </aside>
 
-    <form method="get">
-        <label>Search by Service Title:</label>
-        <input type="text" name="service" value="<?= htmlspecialchars($service_filter) ?>">
+    <!-- Main -->
+    <main class="dashboard-main">
+        <h2>My Bookings</h2>
 
-        <label>Start Date:</label>
-        <input type="date" name="start_date" value="<?= htmlspecialchars($start_date) ?>">
+        <?php if (!empty($_GET['message'])): ?>
+            <div class="message"><?= htmlspecialchars($_GET['message']) ?></div>
+        <?php endif; ?>
 
-        <label>End Date:</label>
-        <input type="date" name="end_date" value="<?= htmlspecialchars($end_date) ?>">
+        <form method="get" class="filter-form">
+            <div class="form-row">
+                <label>Search by Service Title:</label>
+                <input type="text" name="service" value="<?= htmlspecialchars($service_filter) ?>">
+            </div>
 
-        <button type="submit">Apply Filters</button>
-        <a href="view_cleaner_bookings.php">Reset</a>
-    </form>
+            <div class="form-row">
+                <label>Start Date:</label>
+                <input type="date" name="start_date" value="<?= htmlspecialchars($start_date) ?>">
+            </div>
 
-    <br>
+            <div class="form-row">
+                <label>End Date:</label>
+                <input type="date" name="end_date" value="<?= htmlspecialchars($end_date) ?>">
+            </div>
 
-    <?php if (empty($filtered)): ?>
-        <p>No bookings match your filters.</p>
-    <?php else: ?>
-        <table border="1" cellpadding="10">
-            <tr>
-                <th>Service</th>
-                <th>Category</th>
-                <th>Homeowner</th>
-                <th>Price</th>
-                <th>Pricing</th>
-                <th>Scheduled</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-            <?php foreach ($filtered as $b): ?>
-                <tr>
-                    <td><?= htmlspecialchars($b['title']) ?></td>
-                    <td><?= htmlspecialchars($b['category_name']) ?></td>
-                    <td><?= htmlspecialchars($b['homeowner_email']) ?></td>
-                    <td><?= number_format($b['price'], 2) ?> SGD</td>
-                    <td><?= $b['pricing_type'] === 'per_job' ? 'Per Job' : 'Per Hour' ?></td>
-                    <td><?= date('Y-m-d H:i', strtotime($b['booking_datetime'])) ?></td>
-                    <td><?= ucfirst($b['status']) ?></td>
-                    <td>
-                        <?php if ($b['status'] === 'confirmed'): ?>
-                            <form method="post" style="display:inline;">
-                                <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
-                                <button type="submit" name="action" value="accept">Accept</button>
-                            </form>
-                            <form method="post" style="display:inline;">
-                                <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
-                                <button type="submit" name="action" value="reject">Reject</button>
-                            </form>
-                        <?php elseif ($b['status'] === 'pending'): ?>
-                            <form method="post" style="display:inline;">
-                                <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
-                                <button type="submit" name="action" value="start">Start</button>
-                            </form>
-                        <?php elseif ($b['status'] === 'in_progress'): ?>
-                            <form method="post" style="display:inline;">
-                                <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
-                                <button type="submit" name="action" value="complete">Complete</button>
-                            </form>
-                        <?php else: ?>
-                            —
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php endif; ?>
+            <div class="form-actions">
+                <button type="submit">Apply Filters</button>
+                <a href="view_cleaner_bookings.php" class="reset-link">Reset</a>
+            </div>
+        </form>
 
-    <p><a href="dashboard_cleaner.php">← Back</a></p>
+        <?php if (empty($filtered)): ?>
+            <p>No bookings match your filters.</p>
+        <?php else: ?>
+            <div class="table-wrapper">
+                <table class="booking-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Service</th>
+                            <th>Category</th>
+                            <th>Homeowner</th>
+                            <th>Price</th>
+                            <th>Pricing</th>
+                            <th>Scheduled</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($filtered as $i => $b): ?>
+                            <tr>
+                                <td><?= $i + 1 ?></td>
+                                <td><?= htmlspecialchars($b['title']) ?></td>
+                                <td><?= htmlspecialchars($b['category_name']) ?></td>
+                                <td><?= htmlspecialchars($b['homeowner_email']) ?></td>
+                                <td><?= number_format($b['price'], 2) ?> SGD</td>
+                                <td><?= $b['pricing_type'] === 'per_job' ? 'Per Job' : 'Per Hour' ?></td>
+                                <td><?= date('Y-m-d H:i', strtotime($b['booking_datetime'])) ?></td>
+                                <td><?= ucfirst($b['status']) ?></td>
+                                <td>
+                                    <?php if ($b['status'] === 'confirmed'): ?>
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
+                                            <button type="submit" name="action" value="accept" class="btn btn-green">Accept</button>
+                                        </form>
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
+                                            <button type="submit" name="action" value="reject" class="btn btn-red">Reject</button>
+                                        </form>
+
+                                    <?php elseif ($b['status'] === 'pending'): ?>
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
+                                            <button type="submit" name="action" value="start" class="btn btn-blue">Start</button>
+                                        </form>
+
+                                    <?php elseif ($b['status'] === 'in_progress'): ?>
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
+                                            <button type="submit" name="action" value="complete" class="btn btn-green">Complete</button>
+                                        </form>
+
+                                    <?php else: ?>
+                                        —
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </main>
+</div>
 </body>
 </html>

@@ -1,0 +1,21 @@
+/* === Dashboard Cleaner Specific Styles === */
+
+.dashboard-main h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.dashboard-main .welcome {
+    margin-bottom: 20px;
+}
+
+.notification {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 12px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.03);
+}

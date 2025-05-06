@@ -23,24 +23,34 @@ $pending_review_count = $stmt->fetchColumn();
 <html>
 <head>
     <title>Cleaner Dashboard</title>
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/dashboard_cleaner.css">
 </head>
 <body>
-    <h2>Cleaner Dashboard</h2>
-    <p>Welcome, <?= htmlspecialchars($_SESSION['user']['email']) ?>!</p>
-	
-	<?php if ($pending_review_count > 0): ?>
-    <p style="color: red; font-weight: bold;">
-        🔔 You have <?= $pending_review_count ?> new booking<?= $pending_review_count > 1 ? 's' : '' ?> awaiting response!
-    </p>
-<?php endif; ?>
+<div class="dashboard-layout">
 
+    <aside class="sidebar">
+        <div class="sidebar-brand">HomeCleaners</div>
+        <nav class="sidebar-links">
+            <a href="dashboard_cleaner.php" class="active">Dashboard</a>
+            <a href="add_service.php">Add Service</a>
+            <a href="manage_services.php">My Services</a>
+            <a href="view_cleaner_bookings.php">Bookings</a>
+            <a href="../logout.php" class="logout-link">Logout</a>
+        </nav>
+    </aside>
 
-    <ul>
-        <li><a href="add_service.php">Add New Cleaning Service</a></li>
-		<li><a href="manage_services.php">Manage My Services</a></li>
-		<li><a href="view_cleaner_bookings.php">View My Bookings</a></li>
-    </ul>
+    <main class="dashboard-main">
+        <h2>Cleaner Dashboard</h2>
+        <p class="welcome">Welcome, <?= htmlspecialchars($_SESSION['user']['email']) ?>!</p>
 
-    <p><a href="../logout.php">Logout</a></p>
+        <?php if ($pending_review_count > 0): ?>
+            <div class="notification">
+                🔔 You have <?= $pending_review_count ?> new booking<?= $pending_review_count > 1 ? 's' : '' ?> awaiting response!
+            </div>
+        <?php endif; ?>
+    </main>
+
+</div>
 </body>
 </html>

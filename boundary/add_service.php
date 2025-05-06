@@ -34,35 +34,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html>
-<head><title>Add New Service</title></head>
+<head>
+    <title>Add New Service</title>
+    <link rel="stylesheet" href="../css/add_service.css">
+    <link rel="stylesheet" href="../css/layout.css">
+</head>
 <body>
-    <h2>Create New Service</h2>
-    <?php if (!empty($error)): ?><p><?= $error ?></p><?php endif; ?>
+<div class="dashboard-layout">
 
-    <form method="post">
-        <label>Title:</label><br>
-        <input type="text" name="title" required><br><br>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">HomeCleaners</div>
+        <nav class="sidebar-links">
+            <a href="dashboard_cleaner.php">Dashboard</a>
+            <a href="add_service.php" class="active">Add Service</a>
+            <a href="manage_services.php">My Services</a>
+            <a href="view_cleaner_bookings.php">Bookings</a>
+            <a href="../logout.php" class="logout-link">Logout</a>
+        </nav>
+    </aside>
 
-        <label>Description:</label><br>
-        <textarea name="description" required></textarea><br><br>
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <div class="form-container">
+            <h2>Create New Service</h2>
 
-        <label>Pricing Type:</label><br>
-        <input type="radio" name="pricing_type" value="per_job" checked> Per Job
-        <input type="radio" name="pricing_type" value="per_hour"> Per Hour<br><br>
+            <?php if (!empty($error)): ?>
+                <p class="error"><?= $error ?></p>
+            <?php endif; ?>
 
-        <label>Price (SGD):</label><br>
-        <input type="number" step="0.01" name="price" required><br><br>
+            <form method="post">
+                <label>Title:</label>
+                <input type="text" name="title" required>
 
-        <label>Category:</label><br>
-        <select name="category_id" required>
-            <?php foreach ($categories as $cat): ?>
-                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
-            <?php endforeach; ?>
-        </select><br><br>
+                <label>Description:</label>
+                <textarea name="description" required></textarea>
 
-        <button type="submit">Add Service</button>
-    </form>
+                <label>Pricing Type:</label>
+                <div class="radio-group">
+                    <input type="radio" name="pricing_type" value="per_job" checked> Per Job
+                    <input type="radio" name="pricing_type" value="per_hour"> Per Hour
+                </div>
 
-    <p><a href="dashboard_cleaner.php">← Back</a></p>
+                <label>Price (SGD):</label>
+                <input type="number" step="0.01" name="price" required>
+
+                <label>Category:</label>
+                <select name="category_id" required>
+                    <?php foreach ($categories as $cat): ?>
+                        <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+
+                <button type="submit">Add Service</button>
+            </form>
+        </div>
+    </main>
+</div>
 </body>
 </html>
