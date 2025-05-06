@@ -1,0 +1,13 @@
+/* === Homeowner Sidebar Variant === */
+
+.homeowner-sidebar {
+    background-color: #4DA8DA; /* Teal/blue */
+}
+
+.homeowner-sidebar .sidebar-links a:hover {
+    background-color: #3c8dbc;
+}
+
+.homeowner-sidebar .sidebar-links a.active {
+    background-color: #3c8dbc;
+}
