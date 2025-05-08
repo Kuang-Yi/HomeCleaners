@@ -22,7 +22,6 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'H') {
         <nav class="sidebar-links">
             <a href="dashboard_homeowner.php" class="active">Dashboard</a>
             <a href="view_services.php">Browse Services</a>
-            <a href="#">Search for Cleaners</a>
             <a href="view_bookings.php">My Bookings</a>
             <a href="view_shortlist.php">My Shortlist</a>
             <a href="../logout.php" class="logout-link">Logout</a>

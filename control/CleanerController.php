@@ -25,9 +25,9 @@ class CleanerController {
     }
 
 
-    public static function updateService($cleaner_id, $service_id, $title, $desc, $pricing_type, $price) {
-        global $pdo;
-        return Service::update($pdo, $service_id, $cleaner_id, $title, $desc, $pricing_type, $price);
+    public static function updateService($service_id, $cleaner_id, $title, $description, $pricing_type, $price) {
+    global $pdo;
+    return Service::update($pdo, $service_id, $cleaner_id, $title, $description, $pricing_type, $price);
     }
 
     public static function deleteServiceById($cleaner_id, $service_id) {

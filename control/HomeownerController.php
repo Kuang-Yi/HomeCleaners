@@ -18,9 +18,10 @@ class HomeownerController {
 
     // Shortlist a service
     public static function shortlistService($homeowner_id, $service_id) {
-        global $pdo;
-        return Shortlist::add($pdo, $homeowner_id, $service_id);
+    global $pdo;
+    return Shortlist::add($pdo, $homeowner_id, $service_id);
     }
+
 
     // Book a service
     public static function bookService($homeowner_id, $service_id, $datetime) {
@@ -71,6 +72,11 @@ class HomeownerController {
     public static function getBookingServiceOptions($homeowner_id) {
     global $pdo;
     return Booking::getDistinctTitles($pdo, $homeowner_id);
+}
+
+    public static function removeShortlist($homeowner_id, $service_id) {
+    global $pdo;
+    return Shortlist::remove($pdo, $homeowner_id, $service_id);
 }
 
 }

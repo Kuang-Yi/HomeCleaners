@@ -33,10 +33,8 @@ class Shortlist {
 
     // Remove a service from the shortlist
     public static function remove($pdo, $homeowner_id, $service_id) {
-        $stmt = $pdo->prepare("
-            DELETE FROM shortlists
-            WHERE homeowner_id = ? AND service_id = ?
-        ");
-        return $stmt->execute([$homeowner_id, $service_id]);
-    }
+    $stmt = $pdo->prepare("DELETE FROM shortlists WHERE homeowner_id = ? AND service_id = ?");
+    return $stmt->execute([$homeowner_id, $service_id]);
+}
+
 }

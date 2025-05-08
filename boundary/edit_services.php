@@ -9,26 +9,28 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'C') {
 }
 
 $cleaner_id = $_SESSION['user']['id'];
-$service_id = intval($_GET['id'] ?? 0);
-$service = CleanerController::getServiceById($cleaner_id, $service_id);
-if (!$service) { die("Service not found or unauthorized."); }
+$service_id = $_GET['id'] ?? null;
+
+if (!$service_id) {
+    header('Location: manage_services.php');
+    exit();
+}
+
+$service = CleanerController::getServiceById($service_id, $cleaner_id);
+if (!$service) {
+    echo "<p>Service not found or not owned by you.</p><p><a href='manage_services.php'>Back</a></p>";
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $success = CleanerController::updateService(
-        $cleaner_id,
-        $service_id,
-        $_POST['title'],
-        $_POST['description'],
-        $_POST['pricing_type'],
-        floatval($_POST['price'])
-    );
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $pricing_type = $_POST['pricing_type'];
+    $price = $_POST['price'];
 
-    if ($success) {
-        header("Location: manage_services.php?message=" . urlencode("✅ Service updated."));
-        exit();
-    } else {
-        $error = "❌ Update failed.";
-    }
+    CleanerController::updateService($service_id, $cleaner_id, $title, $description, $pricing_type, $price);
+    header("Location: manage_services.php");
+    exit();
 }
 ?>
 
@@ -36,57 +38,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Edit Service</title>
-    <link rel="stylesheet" href="../css/layout.css">
-    <link rel="stylesheet" href="../css/edit_service.css">
 </head>
 <body>
-<div class="dashboard-layout">
+    <h2>Edit My Service</h2>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-brand">HomeCleaners</div>
-        <nav class="sidebar-links">
-            <a href="dashboard_cleaner.php">Dashboard</a>
-            <a href="add_service.php">Add Service</a>
-            <a href="manage_services.php" class="active">My Services</a>
-            <a href="view_cleaner_bookings.php">Bookings</a>
-            <a href="../logout.php" class="logout-link">Logout</a>
-        </nav>
-    </aside>
+    <form method="post">
+        <label>Title:</label><br>
+        <input type="text" name="title" value="<?= htmlspecialchars($service['title']) ?>" required><br><br>
 
-    <!-- Main Content -->
-    <main class="dashboard-main">
-        <h2>Edit Service</h2>
+        <label>Description:</label><br>
+        <textarea name="description" required><?= htmlspecialchars($service['description']) ?></textarea><br><br>
 
-        <?php if (!empty($error)): ?>
-            <p class="error"><?= $error ?></p>
-        <?php endif; ?>
+        <label>Pricing Type:</label><br>
+        <input type="radio" name="pricing_type" value="per_job" <?= $service['pricing_type'] === 'per_job' ? 'checked' : '' ?>> Per Job
+        <input type="radio" name="pricing_type" value="per_hour" <?= $service['pricing_type'] === 'per_hour' ? 'checked' : '' ?>> Per Hour<br><br>
 
-        <form method="post" class="form-box">
-            <label for="title">Title:</label>
-            <input type="text" name="title" id="title" value="<?= htmlspecialchars($service['title']) ?>" required>
+        <label>Price (SGD):</label><br>
+        <input type="number" name="price" value="<?= $service['price'] ?>" step="0.01" required><br><br>
 
-            <label for="description">Description:</label>
-            <textarea name="description" id="description" required><?= htmlspecialchars($service['description']) ?></textarea>
+        <button type="submit">Update Service</button>
+    </form>
 
-            <label>Pricing Type:</label>
-            <div class="radio-group">
-                <label><input type="radio" name="pricing_type" value="per_job" <?= $service['pricing_type'] === 'per_job' ? 'checked' : '' ?>> Per Job</label>
-                <label><input type="radio" name="pricing_type" value="per_hour" <?= $service['pricing_type'] === 'per_hour' ? 'checked' : '' ?>> Per Hour</label>
-            </div>
-
-            <label for="price">Price (SGD):</label>
-            <input type="number" name="price" id="price" value="<?= $service['price'] ?>" step="0.01" required>
-
-            <label>Category:</label>
-            <input type="text" value="<?= htmlspecialchars($service['category_name']) ?>" readonly>
-
-            <button type="submit" class="btn btn-green">Update</button>
-        </form>
-		
-		<a href="manage_services.php">Return to Services</a>
-		
-    </main>
-</div>
+    <p><a href="manage_services.php">← Back to My Services</a></p>
 </body>
 </html>
