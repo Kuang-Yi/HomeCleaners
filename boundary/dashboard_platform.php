@@ -10,24 +10,16 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'P') {
 <html>
 <head>
     <title>Platform Manager Dashboard</title>
-	<link rel="stylesheet" href="../css/dashboard_platform.css">
-
 </head>
 <body>
-
-    <div class="dashboard-main">
     <h2>Platform Manager Dashboard</h2>
-    <p class="welcome">Welcome back, Platform Manager!</p>
+    <p>Welcome, <?= htmlspecialchars($_SESSION['user']['email']) ?>!</p>
 
-    <div class="notification">
-        You have access to platform-wide reports and category management.
-    </div>
+    <ul>
+        <li><a href="manage_categories.php">Manage Cleaning Categories</a></li>
+        <li><a href="generate_report.php">View Reports</a></li>
+    </ul>
 
-    <div class="dashboard-links">
-        <a href="manage_categories.php">Manage Categories</a>
-        <a href="generate_report.php">Generate Reports</a>
-        <a href="../logout.php">Logout</a>
-    </div>
-</div>
+    <p><a href="../logout.php">Logout</a></p>
 </body>
 </html>

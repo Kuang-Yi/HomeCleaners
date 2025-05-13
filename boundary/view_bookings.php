@@ -33,6 +33,7 @@ $bookings = HomeownerController::filterBookings($homeowner_id, $service_search, 
         <nav class="sidebar-links">
             <a href="dashboard_homeowner.php">Dashboard</a>
             <a href="view_services.php">Browse Services</a>
+            <a href="#">Search for Cleaners</a>
             <a href="view_bookings.php" class="active">My Bookings</a>
             <a href="view_shortlist.php">My Shortlist</a>
             <a href="../logout.php" class="logout-link">Logout</a>
