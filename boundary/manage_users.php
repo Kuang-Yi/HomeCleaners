@@ -12,7 +12,6 @@ $action = $_GET['action'] ?? '';
 $edit_id = $_GET['edit'] ?? null;
 $users = AdminController::getAllUsers();
 $edit_user = $edit_id ? AdminController::getUserById($edit_id) : null;
-$message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['create'])) {
@@ -39,8 +38,10 @@ if ($action === 'delete' && isset($_GET['id'])) {
 <html>
 <head>
     <title>Manage Users</title>
+    <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
+<div class="container">
     <h2>Manage Users</h2>
 
     <h3><?= $edit_user ? 'Edit User' : 'Create New User' ?></h3>
@@ -48,40 +49,52 @@ if ($action === 'delete' && isset($_GET['id'])) {
         <?php if ($edit_user): ?>
             <input type="hidden" name="id" value="<?= $edit_user['id'] ?>">
         <?php endif; ?>
-        <input type="email" name="email" required placeholder="Email" value="<?= $edit_user['email'] ?? '' ?>"><br>
+
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="Email" value="<?= $edit_user['email'] ?? '' ?>">
+
         <?php if (!$edit_user): ?>
-            <input type="password" name="password" required placeholder="Password"><br>
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="Password">
         <?php endif; ?>
+
+        <label>User Type</label>
         <select name="user_type" required>
             <option value="C" <?= (isset($edit_user) && $edit_user['user_type'] === 'C') ? 'selected' : '' ?>>Cleaner</option>
             <option value="H" <?= (isset($edit_user) && $edit_user['user_type'] === 'H') ? 'selected' : '' ?>>Homeowner</option>
-        </select><br>
-        <button type="submit" name="<?= $edit_user ? 'update' : 'create' ?>">
+        </select>
+
+        <button type="submit" name="<?= $edit_user ? 'update' : 'create' ?>" class="btn">
             <?= $edit_user ? 'Update' : 'Create' ?>
         </button>
     </form>
 
-    <h3>Existing Users</h3>
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>User Type</th>
-            <th>Action</th>
-        </tr>
-        <?php foreach ($users as $u): ?>
+    <h3 class="mt-20">Existing Users</h3>
+    <table>
+        <thead>
             <tr>
-                <td><?= $u['id'] ?></td>
-                <td><?= htmlspecialchars($u['email']) ?></td>
-                <td><?= $u['user_type'] === 'C' ? 'Cleaner' : 'Homeowner' ?></td>
-                <td>
-                    <a href="?edit=<?= $u['id'] ?>">Edit</a> |
-                    <a href="?action=delete&id=<?= $u['id'] ?>" onclick="return confirm('Delete this user?')">Delete</a>
-                </td>
+                <th>ID</th>
+                <th>Email</th>
+                <th>User Type</th>
+                <th>Action</th>
             </tr>
-        <?php endforeach; ?>
+        </thead>
+        <tbody>
+            <?php foreach ($users as $u): ?>
+                <tr>
+                    <td><?= $u['id'] ?></td>
+                    <td><?= htmlspecialchars($u['email']) ?></td>
+                    <td><?= $u['user_type'] === 'C' ? 'Cleaner' : 'Homeowner' ?></td>
+                    <td>
+                        <a href="?edit=<?= $u['id'] ?>" class="btn">Edit</a>
+                        <a href="?action=delete&id=<?= $u['id'] ?>" class="btn" onclick="return confirm('Delete this user?')">Delete</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
     </table>
 
-    <p><a href="dashboard_admin.php">← Back to Dashboard</a></p>
+    <a href="dashboard_admin.php" class="btn">← Back to Dashboard</a>
+</div>
 </body>
 </html>

@@ -8,25 +8,46 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'P') {
     exit();
 }
 
+// === Helper functions ===
 function getAvailableBookingPeriods($pdo) {
-    $stmt = $pdo->query("SELECT booking_datetime FROM bookings ORDER BY booking_datetime DESC");
-    $dates = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
     $days = [];
     $weeks = [];
     $months = [];
 
-    foreach ($dates as $datetime) {
-        $ts = strtotime($datetime);
-        $days[] = date('Y-m-d', $ts);
-        $weeks[] = date('o-\WW', $ts);
-        $months[] = date('Y-m', $ts);
-    }
+    // Group daily
+    $stmt = $pdo->query("
+        SELECT DATE(booking_datetime) AS day
+        FROM bookings
+        GROUP BY day
+        HAVING COUNT(*) > 0
+        ORDER BY day DESC
+    ");
+    $days = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    // Group weekly using ISO year-week
+    $stmt = $pdo->query("
+        SELECT DATE_FORMAT(booking_datetime, '%x-W%v') AS week
+        FROM bookings
+        GROUP BY week
+        HAVING COUNT(*) > 0
+        ORDER BY week DESC
+    ");
+    $weeks = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    // Group monthly
+    $stmt = $pdo->query("
+        SELECT DATE_FORMAT(booking_datetime, '%Y-%m') AS month
+        FROM bookings
+        GROUP BY month
+        HAVING COUNT(*) > 0
+        ORDER BY month DESC
+    ");
+    $months = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
     return [
-        'daily' => array_unique($days),
-        'weekly' => array_unique($weeks),
-        'monthly' => array_unique($months),
+        'daily' => $days,
+        'weekly' => $weeks,
+        'monthly' => $months,
     ];
 }
 
@@ -69,72 +90,81 @@ function fetchBookingsByPeriod($pdo, $type, $value) {
     return $stmt->fetchAll();
 }
 
+// === Form handling ===
+$previewBookings = [];
+$options = getAvailableBookingPeriods($pdo);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type = $_POST['time_type'];
     $value = $_POST['time_value'];
 
-    $bookings = fetchBookingsByPeriod($pdo, $type, $value);
+    $previewBookings = fetchBookingsByPeriod($pdo, $type, $value);
 
-    // Landscape mode
-    $pdf = new FPDF('L', 'mm', 'A4');
-    $pdf->AddPage();
-    $pdf->SetFont('Arial','B',14);
-    $pdf->Cell(0,10,'Booking Report - '.ucfirst($type) . ' (' . $value . ')',0,1,'C');
+    if (isset($_POST['download_pdf'])) {
+        $pdf = new FPDF('L', 'mm', 'A4');
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','B',14);
+        $pdf->Cell(0,10,'Booking Report - '.ucfirst($type) . ' (' . $value . ')',0,1,'C');
 
-    $pdf->SetFont('Arial','B',9);
-    $pdf->Cell(40,10,'Service',1);
-    $pdf->Cell(50,10,'Cleaner Email',1);
-    $pdf->Cell(50,10,'Homeowner Email',1);
-    $pdf->Cell(30,10,'Category',1);
-    $pdf->Cell(20,10,'Price',1);
-    $pdf->Cell(25,10,'Pricing',1);
-    $pdf->Cell(55,10,'Order Date & Time',1);
-    $pdf->Ln();
-
-    $pdf->SetFont('Arial','',9);
-    foreach ($bookings as $b) {
-        $pdf->Cell(40,10,substr($b['title'], 0, 30),1);
-        $pdf->Cell(50,10,substr($b['cleaner_email'], 0, 40),1);
-        $pdf->Cell(50,10,substr($b['homeowner_email'], 0, 40),1);
-        $pdf->Cell(30,10,$b['category_name'],1);
-        $pdf->Cell(20,10,$b['price'],1);
-        $pdf->Cell(25,10,$b['pricing_type'],1);
-        $pdf->Cell(55,10,substr($b['booking_datetime'], 0, 16),1);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(40,10,'Service',1);
+        $pdf->Cell(50,10,'Cleaner Email',1);
+        $pdf->Cell(50,10,'Homeowner Email',1);
+        $pdf->Cell(30,10,'Category',1);
+        $pdf->Cell(20,10,'Price',1);
+        $pdf->Cell(25,10,'Pricing',1);
+        $pdf->Cell(30,10,'Status',1);
+        $pdf->Cell(45,10,'Order Date & Time',1);
         $pdf->Ln();
+
+        $pdf->SetFont('Arial','',9);
+        foreach ($previewBookings as $b) {
+            $pdf->Cell(40,10,substr($b['title'], 0, 30),1);
+            $pdf->Cell(50,10,substr($b['cleaner_email'], 0, 40),1);
+            $pdf->Cell(50,10,substr($b['homeowner_email'], 0, 40),1);
+            $pdf->Cell(30,10,$b['category_name'],1);
+            $pdf->Cell(20,10,$b['price'],1);
+            $pdf->Cell(25,10,$b['pricing_type'],1);
+            $pdf->Cell(30,10,$b['status'],1);
+            $pdf->Cell(45,10,substr($b['booking_datetime'], 0, 16),1);
+            $pdf->Ln();
+        }
+
+        $filename = "Booking_Report_" . $type . "_" . str_replace(['-', 'W'], '_', $value) . ".pdf";
+        $pdf->Output('D', $filename);
+        exit();
     }
-
-    $filename = "Booking_Report_" . $type . "_" . str_replace(['-', 'W'], '_', $value) . ".pdf";
-    $pdf->Output('D', $filename);
-    exit();
 }
-
-$options = getAvailableBookingPeriods($pdo);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Generate Booking Report</title>
+    <link rel="stylesheet" href="../css/generate_report.css">
     <script>
-    function updateDropdown() {
-        const selectedType = document.querySelector('input[name="time_type"]:checked').value;
-        const allOptions = document.querySelectorAll('#time_value option');
+        function updateDropdown() {
+            const selectedType = document.querySelector('input[name="time_type"]:checked').value;
+            const allOptions = document.querySelectorAll('#time_value option');
 
-        allOptions.forEach(opt => {
-            opt.style.display = (opt.dataset.group === selectedType) ? 'block' : 'none';
-        });
+            allOptions.forEach(opt => {
+                opt.style.display = (opt.dataset.group === selectedType) ? 'block' : 'none';
+            });
 
-        const visible = Array.from(allOptions).find(opt => opt.style.display === 'block');
-        if (visible) {
-            document.getElementById('time_value').value = visible.value;
+            const firstVisible = Array.from(allOptions).find(opt => opt.style.display === 'block');
+            if (firstVisible) {
+                document.getElementById('time_value').value = firstVisible.value;
+            }
         }
-    }
 
-    window.onload = updateDropdown;
+        window.onload = updateDropdown;
     </script>
 </head>
 <body>
+<div class="container">
     <h2>Generate Booking Report</h2>
+
+    <div class="notice">Select a period and time range to preview and download a report.</div>
 
     <form method="post">
         <label><input type="radio" name="time_type" value="daily" checked onclick="updateDropdown()"> Daily</label>
@@ -142,7 +172,6 @@ $options = getAvailableBookingPeriods($pdo);
         <label><input type="radio" name="time_type" value="monthly" onclick="updateDropdown()"> Monthly</label>
         <br><br>
 
-        <label for="time_value">Select Period:</label><br>
         <select name="time_value" id="time_value" required>
             <?php foreach ($options['daily'] as $val): ?>
                 <option data-group="daily" value="<?= $val ?>"><?= $val ?></option>
@@ -154,11 +183,43 @@ $options = getAvailableBookingPeriods($pdo);
                 <option data-group="monthly" value="<?= $val ?>" style="display:none"><?= $val ?></option>
             <?php endforeach; ?>
         </select>
-
         <br><br>
-        <button type="submit">Generate PDF Report</button>
+
+        <button type="submit" name="preview">Preview Bookings</button>
+        <?php if (!empty($previewBookings)): ?>
+            <button type="submit" name="download_pdf">Download PDF</button>
+        <?php endif; ?>
     </form>
 
-    <p><a href="dashboard_platform.php">← Back to Dashboard</a></p>
+    <?php if (!empty($previewBookings)): ?>
+        <h3>Booking Preview</h3>
+        <table border="1" cellpadding="8" cellspacing="0">
+            <tr>
+                <th>Service</th>
+                <th>Cleaner Email</th>
+                <th>Homeowner Email</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Pricing</th>
+                <th>Status</th>
+                <th>Order Date & Time</th>
+            </tr>
+            <?php foreach ($previewBookings as $b): ?>
+                <tr>
+                    <td><?= htmlspecialchars($b['title']) ?></td>
+                    <td><?= htmlspecialchars($b['cleaner_email']) ?></td>
+                    <td><?= htmlspecialchars($b['homeowner_email']) ?></td>
+                    <td><?= htmlspecialchars($b['category_name']) ?></td>
+                    <td><?= number_format($b['price'], 2) ?></td>
+                    <td><?= $b['pricing_type'] ?></td>
+                    <td><?= htmlspecialchars($b['status']) ?></td>
+                    <td><?= htmlspecialchars($b['booking_datetime']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php endif; ?>
+
+    <a href="dashboard_platform.php" class="back-link">← Back to Dashboard</a>
+</div>
 </body>
 </html>
