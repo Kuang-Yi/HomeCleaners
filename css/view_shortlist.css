@@ -1,68 +1,117 @@
-.booking-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95em;
-    table-layout: fixed;
+/* === Base Reset === */
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.booking-table th,
-.booking-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
+body {
+    background-color: #f4f6f9;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* === Header === */
+h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+p {
+    text-align: center;
+    font-size: 1.1em;
+    margin-top: 30px;
+}
+
+/* === Table === */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+td {
+    padding: 14px;
+    border-bottom: 1px solid #ddd;
     vertical-align: top;
 }
 
-.booking-table th {
-    background-color: #f4f4f4;
-}
-
-.booking-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.booking-table th:nth-child(1) { width: 4%; }
-.booking-table th:nth-child(2) { width: 14%; }
-.booking-table th:nth-child(3) { width: 16%; }
-.booking-table th:nth-child(4) { width: 10%; }
-.booking-table th:nth-child(5) { width: 14%; }
-.booking-table th:nth-child(6) { width: 10%; }
-.booking-table th:nth-child(7) { width: 10%; }
-.booking-table th:nth-child(8) { width: 22%; }
-
-.action-form input[type="datetime-local"] {
+/* === Action Table === */
+.action-table {
     width: 100%;
-    margin-bottom: 6px;
-    padding: 6px 8px;
+    border-collapse: collapse;
+}
+
+.action-table td {
+    padding: 4px;
+}
+
+.action-table input[type="datetime-local"] {
+    width: 100%;
+    padding: 6px;
+    font-size: 0.85em;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 4px;
 }
 
-.action-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.btn {
-    padding: 6px 14px;
-    font-size: 0.9em;
+/* Button Styling */
+.action-table button {
+    width: 100%;
+    padding: 6px;
+    font-size: 0.85em;
     border: none;
-    border-radius: 5px;
-    color: white;
+    border-radius: 4px;
     cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s ease;
+    color: white;
 }
 
-.btn-green {
-    background-color: #61B15A;
-}
-.btn-green:hover {
-    background-color: #4c9649;
+/* Book Button */
+.action-table button[name="book"] {
+    background-color: #28a745;
 }
 
-.btn-red {
-    background-color: #d9534f;
+.action-table button[name="book"]:hover {
+    background-color: #218838;
 }
-.btn-red:hover {
-    background-color: #c9302c;
+
+/* Remove Button */
+.action-table button[name="remove"] {
+    background-color: #dc3545;
+}
+
+.action-table button[name="remove"]:hover {
+    background-color: #c82333;
+}
+
+/* === Back Link === */
+a {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+a:hover {
+    text-decoration: underline;
 }

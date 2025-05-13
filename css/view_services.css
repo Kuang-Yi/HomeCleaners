@@ -1,72 +1,116 @@
-.service-search-form {
-    display: flex;
-    gap: 10px;
+/* === Base Reset === */
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    padding: 20px;
+    color: #333;
+}
+
+/* === Container and Header === */
+h2 {
+    text-align: center;
+    color: #2c3e50;
     margin-bottom: 20px;
 }
 
-.service-search-form input[type="text"] {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    width: 300px;
-    background-color: #f0f4ff;
+/* === Search Form === */
+form[method="get"] {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
 }
 
-.service-table {
+form[method="get"] input[type="text"] {
+    width: 40%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form[method="get"] button {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 18px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form[method="get"] button:hover {
+    background-color: #0056b3;
+}
+
+/* === Table === */
+table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95em;
+    margin-bottom: 30px;
+    background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.service-table th,
-.service-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
+th {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
     vertical-align: top;
 }
 
-.service-table th {
-    background-color: #f4f4f4;
-}
-
-.service-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.action-form input[type="datetime-local"] {
-    padding: 6px;
-    margin-bottom: 6px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 100%;
-}
-
-.action-buttons {
+td form {
     display: flex;
-    gap: 8px;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.btn {
-    padding: 6px 14px;
-    font-size: 0.9em;
+td form input[type="datetime-local"] {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+td form button {
+    background-color: #28a745;
     border: none;
-    border-radius: 5px;
+    padding: 8px;
     color: white;
+    border-radius: 4px;
     cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s ease;
 }
 
-.btn-green {
-    background-color: #61B15A;
-}
-.btn-green:hover {
-    background-color: #4c9649;
+td form button:hover {
+    background-color: #218838;
 }
 
-.btn-blue {
-    background-color: #007BFF;
+td form[action="shortlist_service.php"] button {
+    background-color: #ffc107;
 }
-.btn-blue:hover {
-    background-color: #0056b3;
+
+td form[action="shortlist_service.php"] button:hover {
+    background-color: #e0a800;
+}
+
+/* === Back Link === */
+a {
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    color: #007bff;
+    margin-top: 20px;
+}
+
+a:hover {
+    text-decoration: underline;
 }

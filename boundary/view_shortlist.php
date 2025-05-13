@@ -16,14 +16,16 @@ $shortlisted_services = HomeownerController::getShortlistedServices($homeowner_i
 <html>
 <head>
     <title>My Shortlisted Services</title>
+    <link rel="stylesheet" href="../css/view_shortlist.css?v=2">
 </head>
 <body>
+<div class="container">
     <h2>My Shortlist</h2>
 
     <?php if (empty($shortlisted_services)): ?>
         <p>You have not shortlisted any services yet.</p>
     <?php else: ?>
-        <table border="1" cellpadding="10">
+        <table>
             <tr>
                 <th>Title</th>
                 <th>Description</th>
@@ -42,17 +44,19 @@ $shortlisted_services = HomeownerController::getShortlistedServices($homeowner_i
                     <td><?= $s['pricing_type'] === 'per_job' ? 'Per Job' : 'Per Hour' ?></td>
                     <td><?= number_format($s['price'], 2) ?></td>
                     <td>
-                        <!-- Book -->
-                        <form method="post" action="book_shortlist.php" style="margin-bottom: 5px;">
+                        <form method="post" action="book_shortlist.php" onsubmit="return confirm('Proceed with booking?');">
                             <input type="hidden" name="service_id" value="<?= $s['id'] ?>">
-                            <input type="datetime-local" name="booking_datetime" required>
-                            <button type="submit">Book</button>
-                        </form>
-
-                        <!-- Remove -->
-                        <form method="post" action="remove_shortlist.php" onsubmit="return confirm('Remove from shortlist?');">
-                            <input type="hidden" name="service_id" value="<?= $s['id'] ?>">
-                            <button type="submit">Remove</button>
+                            <table class="action-table">
+                                <tr>
+                                    <td colspan="2">
+                                        <input type="datetime-local" name="booking_datetime" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><button type="submit" name="book">Book</button></td>
+                                    <td><button type="submit" name="remove" formaction="remove_shortlist.php">Remove</button></td>
+                                </tr>
+                            </table>
                         </form>
                     </td>
                 </tr>
@@ -60,6 +64,7 @@ $shortlisted_services = HomeownerController::getShortlistedServices($homeowner_i
         </table>
     <?php endif; ?>
 
-    <p><a href="dashboard_homeowner.php">← Back to Dashboard</a></p>
+    <a href="dashboard_homeowner.php">← Back to Dashboard</a>
+</div>
 </body>
 </html>

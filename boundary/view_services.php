@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Browse Cleaning Services</title>
+    <link rel="stylesheet" href="../css/view_services.css">
 </head>
 <body>
     <h2>Browse Cleaning Services</h2>
@@ -39,9 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="text" name="search" placeholder="Search title, category, or cleaner..." value="<?= htmlspecialchars($search) ?>">
         <button type="submit">Search</button>
     </form>
-    <br>
 
-    <table border="1" cellpadding="10">
+    <table>
         <tr>
             <th>Title</th>
             <th>Description</th>
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <td><?= $s['pricing_type'] === 'per_job' ? 'Per Job' : 'Per Hour' ?></td>
                 <td><?= number_format($s['price'], 2) ?></td>
                 <td>
-                    <form method="post" style="margin-bottom: 5px;">
+                    <form method="post">
                         <input type="hidden" name="service_id" value="<?= $s['id'] ?>">
                         <input type="datetime-local" name="booking_datetime" required>
                         <button type="submit" name="book">Book</button>
@@ -75,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endforeach; ?>
     </table>
 
-    <p><a href="dashboard_homeowner.php">← Back to Dashboard</a></p>
+    <a href="dashboard_homeowner.php">← Back to Dashboard</a>
 </body>
 </html>
+

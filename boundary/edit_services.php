@@ -38,27 +38,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Edit Service</title>
+	<link rel="stylesheet" href="../css/edit_service.css">
 </head>
 <body>
+<div class="container">
     <h2>Edit My Service</h2>
 
     <form method="post">
-        <label>Title:</label><br>
-        <input type="text" name="title" value="<?= htmlspecialchars($service['title']) ?>" required><br><br>
+        <label>Title:</label>
+        <input type="text" name="title" value="<?= htmlspecialchars($service['title']) ?>" required>
 
-        <label>Description:</label><br>
-        <textarea name="description" required><?= htmlspecialchars($service['description']) ?></textarea><br><br>
+        <label>Description:</label>
+        <textarea name="description" required><?= htmlspecialchars($service['description']) ?></textarea>
 
-        <label>Pricing Type:</label><br>
+        <label>Pricing Type:</label>
         <input type="radio" name="pricing_type" value="per_job" <?= $service['pricing_type'] === 'per_job' ? 'checked' : '' ?>> Per Job
-        <input type="radio" name="pricing_type" value="per_hour" <?= $service['pricing_type'] === 'per_hour' ? 'checked' : '' ?>> Per Hour<br><br>
+        <input type="radio" name="pricing_type" value="per_hour" <?= $service['pricing_type'] === 'per_hour' ? 'checked' : '' ?>> Per Hour
 
-        <label>Price (SGD):</label><br>
-        <input type="number" name="price" value="<?= $service['price'] ?>" step="0.01" required><br><br>
+        <label>Price (SGD):</label>
+        <input type="number" name="price" value="<?= $service['price'] ?>" step="0.01" required>
 
         <button type="submit">Update Service</button>
     </form>
 
-    <p><a href="manage_services.php">← Back to My Services</a></p>
+    <a href="manage_services.php">← Back to My Services</a>
+</div>
 </body>
 </html>
