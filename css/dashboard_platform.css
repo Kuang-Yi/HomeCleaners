@@ -1,0 +1,59 @@
+/* === Dashboard Platform Manager Specific Styles === */
+
+.dashboard-main h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    color: #154360;
+}
+
+.dashboard-main .welcome {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #2c3e50;
+}
+
+/* Light blue alert box */
+.notification {
+    background-color: #d6eaf8;
+    border: 1px solid #aed6f1;
+    color: #1b4f72;
+    padding: 12px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.03);
+}
+
+/* Link buttons */
+.dashboard-links a {
+    display: inline-block;
+    margin: 10px 10px 0 0;
+    padding: 10px 18px;
+    background-color: #5dade2;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.dashboard-links a:hover {
+    background-color: #3498db;
+}
+
+/* Page background and container */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f6fc;
+    margin: 0;
+    padding: 20px;
+}
+
+.dashboard-main {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}

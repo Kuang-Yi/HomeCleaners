@@ -115,6 +115,8 @@ $options = getAvailableBookingPeriods($pdo);
 <html>
 <head>
     <title>Generate Booking Report</title>
+	<link rel="stylesheet" href="../css/generate_report.css">
+
     <script>
     function updateDropdown() {
         const selectedType = document.querySelector('input[name="time_type"]:checked').value;
@@ -134,6 +136,7 @@ $options = getAvailableBookingPeriods($pdo);
     </script>
 </head>
 <body>
+    <div class="container">
     <h2>Generate Booking Report</h2>
 
     <form method="post">
@@ -160,5 +163,6 @@ $options = getAvailableBookingPeriods($pdo);
     </form>
 
     <p><a href="dashboard_platform.php">← Back to Dashboard</a></p>
+	</div>
 </body>
 </html>
