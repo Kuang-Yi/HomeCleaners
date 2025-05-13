@@ -1,5 +1,6 @@
 <?php
 require_once '../entity/Category.php';
+require_once '../entity/Report.php';
 
 class PlatformController {
     public static function getAllCategoriesWithServiceCount() {
@@ -15,5 +16,13 @@ class PlatformController {
     public static function deleteCategory($id) {
         global $pdo;
         return Category::delete($pdo, $id);
+    }
+	
+	public static function getReportOptions() {
+        return Report::getAvailableBookingPeriods();
+    }
+
+    public static function getReportData($type, $value) {
+        return Report::fetchBookingsByPeriod($type, $value);
     }
 }
