@@ -1,26 +1,15 @@
 <?php
-require_once '../config/db.php';
+require_once '../control/AuthController.php';
 session_start();
 
 $message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = $_POST['password'];
     $user_type = $_POST['user_type'];
 
-    // Only allow 'C' or 'H'
-    if (!in_array($user_type, ['C', 'H'])) {
-        $message = "❌ Invalid user type.";
-    } else {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO users (email, password, user_type) VALUES (?, ?, ?)");
-            $stmt->execute([$email, $password, $user_type]);
-            $message = "✅ Registration successful. <a href='login.php'>Login here</a>";
-        } catch (PDOException $e) {
-            $message = ($e->getCode() == 23000) ? "⚠️ Email already registered." : "❌ Error: " . $e->getMessage();
-        }
-    }
+    $message = AuthController::register($email, $password, $user_type);
 }
 ?>
 

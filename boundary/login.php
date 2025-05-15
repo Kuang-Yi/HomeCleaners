@@ -1,5 +1,5 @@
 <?php
-require_once '../config/db.php';
+require_once '../control/AuthController.php';
 session_start();
 
 $message = "";
@@ -8,29 +8,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
-
-    if ($user && password_verify($password, $user['password'])) {
+    $user = AuthController::login($email, $password);
+    if ($user) {
         $_SESSION['user'] = $user;
 
-        // Redirect based on user type
         switch ($user['user_type']) {
-            case 'C':
-                header('Location: dashboard_cleaner.php');
-                break;
-            case 'H':
-                header('Location: dashboard_homeowner.php');
-                break;
-            case 'A':
-                header('Location: dashboard_admin.php');
-                break;
-            case 'P':
-                header('Location: dashboard_platform.php');
-                break;
-            default:
-                $message = "❌ Invalid user role.";
+            case 'C': header('Location: dashboard_cleaner.php'); break;
+            case 'H': header('Location: dashboard_homeowner.php'); break;
+            case 'A': header('Location: dashboard_admin.php'); break;
+            case 'P': header('Location: dashboard_platform.php'); break;
+            default: $message = "❌ Invalid user role."; exit();
         }
         exit();
     } else {
