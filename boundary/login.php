@@ -8,11 +8,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $user = AuthController::login($email, $password);
-    if ($user) {
-        $_SESSION['user'] = $user;
+    $result = AuthController::login($email, $password);
 
-        switch ($user['user_type']) {
+    if ($result === "suspended") {
+        $message = "⚠️ This account is suspended. Please contact admin@gmail.com.";
+    } elseif (is_array($result)) {
+        $_SESSION['user'] = $result;
+
+        switch ($result['user_type']) {
             case 'C': header('Location: dashboard_cleaner.php'); break;
             case 'H': header('Location: dashboard_homeowner.php'); break;
             case 'A': header('Location: dashboard_admin.php'); break;
@@ -25,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -41,8 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="login-card">
             <h2>Log In</h2>
 
-            <?php if ($message): ?>
-                <div class="error"><?php echo $message; ?></div>
+            <?php if (!empty($message)): ?>
+                <div class="message"><?= htmlspecialchars($message) ?></div>
             <?php endif; ?>
 
             <form method="post">
@@ -52,8 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="register.php" class="register-link">Don’t have an account? Register</a>
             </form>
 
-            <a href="#" class="forgot-link">Forgot Password?</a>
         </div>
     </div>
 </body>
+
+
 </html>

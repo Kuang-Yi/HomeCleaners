@@ -7,7 +7,7 @@ class User {
     }
 
     public static function getById($pdo, $id) {
-        $stmt = $pdo->prepare("SELECT id, email, user_type FROM users WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT id, email, user_type, account_status FROM users WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
@@ -34,8 +34,13 @@ class User {
         return $stmt->execute([$id]);
     }
 
+    public static function updateStatus($pdo, $id, $status) {
+        $stmt = $pdo->prepare("UPDATE users SET account_status = ? WHERE id = ?");
+        return $stmt->execute([$status, $id]);
+    }
+
     public static function getAll($pdo) {
-        $stmt = $pdo->query("SELECT id, email, user_type FROM users WHERE user_type IN ('C', 'H')");
+        $stmt = $pdo->query("SELECT id, email, user_type, account_status FROM users ORDER BY id ASC");
         return $stmt->fetchAll();
     }
 }

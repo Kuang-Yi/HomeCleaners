@@ -26,4 +26,9 @@ class AdminController {
         global $pdo;
         return User::delete($pdo, $id);
     }
+
+    public static function updateUserStatus($id, $status) {
+        global $pdo;
+        return User::updateStatus($pdo, $id, $status);
+    }
 }

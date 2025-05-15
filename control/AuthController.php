@@ -6,9 +6,17 @@ class AuthController {
     public static function login($email, $password) {
         global $pdo;
         $user = User::getByEmail($pdo, $email);
-        if ($user && password_verify($password, $user['password'])) {
-            return $user;
+
+        if ($user) {
+            if ($user['account_status'] == 0) {
+                return "suspended";
+            }
+
+            if (password_verify($password, $user['password'])) {
+                return $user;
+            }
         }
+
         return null;
     }
 

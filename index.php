@@ -2,7 +2,7 @@
 session_start();
 
 // Redirect logged-in users
-if (isset($_SESSION['user'])) {
+if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
     switch ($_SESSION['user']['user_type']) {
         case 'C': header('Location: boundary/dashboard_cleaner.php'); break;
         case 'H': header('Location: boundary/dashboard_homeowner.php'); break;
