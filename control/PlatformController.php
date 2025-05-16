@@ -25,4 +25,16 @@ class PlatformController {
     public static function getReportData($type, $value) {
         return Report::fetchBookingsByPeriod($type, $value);
     }
+	
+	public static function updateCategory($id, $newName) {
+    global $pdo;
+
+    if (Category::existsByName($pdo, $newName, $id)) {
+        return "⚠️ A category with this name already exists.";
+    }
+
+    return Category::update($pdo, $id, $newName) ? true : "❌ Update failed.";
+}
+
+
 }

@@ -51,4 +51,21 @@ class Category {
         }
         return false;
     }
+	
+	public static function update($pdo, $id, $newName) {
+    $stmt = $pdo->prepare("UPDATE categories SET name = ? WHERE id = ?");
+    return $stmt->execute([$newName, $id]);
+    }
+	
+	public static function existsByName($pdo, $name, $excludeId = null) {
+    if ($excludeId) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM categories WHERE name = ? AND id != ?");
+        $stmt->execute([$name, $excludeId]);
+    } else {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM categories WHERE name = ?");
+        $stmt->execute([$name]);
+    }
+    return $stmt->fetchColumn() > 0;
+}
+
 }

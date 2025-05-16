@@ -11,24 +11,33 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'P') {
 $message = '';
 $categories = PlatformController::getAllCategoriesWithServiceCount();
 
-// Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['category_name'])) {
         $name = trim($_POST['category_name']);
         if (PlatformController::addCategory($name)) {
             $message = "Category '$name' added successfully.";
         } else {
-            $message = "Failed to add category. It may already exist.";
+            $message = "⚠️ Failed to add category. It may already exist.";
         }
-        $categories = PlatformController::getAllCategoriesWithServiceCount(); // Refresh list
+        $categories = PlatformController::getAllCategoriesWithServiceCount();
+    } elseif (!empty($_POST['edit_category_id']) && !empty($_POST['new_category_name'])) {
+        $id = $_POST['edit_category_id'];
+        $newName = trim($_POST['new_category_name']);
+        $result = PlatformController::updateCategory($id, $newName);
+        if ($result === true) {
+            $message = "Category updated successfully.";
+        } else {
+            $message = $result;
+        }
+        $categories = PlatformController::getAllCategoriesWithServiceCount();
     } elseif (!empty($_POST['delete_category_id'])) {
         $id = $_POST['delete_category_id'];
         if (PlatformController::deleteCategory($id)) {
             $message = "Category deleted successfully.";
         } else {
-            $message = "Failed to delete category.";
+            $message = "❌ Failed to delete category. It may be in use.";
         }
-        $categories = PlatformController::getAllCategoriesWithServiceCount(); // Refresh list
+        $categories = PlatformController::getAllCategoriesWithServiceCount();
     }
 }
 ?>
@@ -36,53 +45,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manage Cleaning Categories</title>
+    <title>Manage Categories</title>
+    <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/manage_categories.css">
 </head>
 <body>
 <div class="container">
-    <h2>Manage Cleaning Categories</h2>
+    <h2>Manage Categories</h2>
 
     <?php if (!empty($message)): ?>
-        <div class="alert"><?= htmlspecialchars($message) ?></div>
+        <div class="message"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
 
-    <!-- Add category form -->
     <form method="post">
-        <label>Category Name:</label>
-        <input type="text" name="category_name" required>
+        <input type="text" name="category_name" placeholder="New category name" required>
         <button type="submit">Add Category</button>
     </form>
 
-    <!-- Existing categories list -->
     <h3>Existing Categories</h3>
-    <?php if (!empty($categories)): ?>
-        <table>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr>
+            <th>Name</th>
+            <th># of Services</th>
+            <th>Actions</th>
+        </tr>
+        <?php foreach ($categories as $c): ?>
             <tr>
-                <th>Name</th>
-                <th>Services Using</th>
-                <th>Action</th>
+                <td>
+                    <form method="post" style="display:inline-block;">
+                        <input type="hidden" name="edit_category_id" value="<?= $c['id'] ?>">
+                        <input type="text" name="new_category_name" value="<?= htmlspecialchars($c['name']) ?>" required>
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+                <td><?= $c['service_count'] ?></td>
+                <td>
+                    <form method="post" onsubmit="return confirm('Delete this category? This cannot be undone.');" style="display:inline-block;">
+                        <input type="hidden" name="delete_category_id" value="<?= $c['id'] ?>">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
             </tr>
-            <?php foreach ($categories as $cat): ?>
-                <tr>
-                    <td><?= htmlspecialchars($cat['name']) ?></td>
-                    <td><?= $cat['service_count'] ?></td>
-                    <td>
-                        <?php if ($cat['service_count'] == 0): ?>
-                            <form method="post" class="inline">
-                                <input type="hidden" name="delete_category_id" value="<?= $cat['id'] ?>">
-                                <button type="submit" onclick="return confirm('Delete this category?')">Delete</button>
-                            </form>
-                        <?php else: ?>
-                            <span style="color: gray;">In use</span>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php else: ?>
-        <p class="alert">No categories found.</p>
-    <?php endif; ?>
+        <?php endforeach; ?>
+    </table>
 
     <p><a href="dashboard_platform.php">← Back to Dashboard</a></p>
 </div>
