@@ -43,4 +43,11 @@ class User {
         $stmt = $pdo->query("SELECT id, email, user_type, account_status FROM users ORDER BY id ASC");
         return $stmt->fetchAll();
     }
+	
+	public static function emailExistsForOtherUser($pdo, $email, $excludeId) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ? AND id != ?");
+    $stmt->execute([$email, $excludeId]);
+    return $stmt->fetchColumn() > 0;
+}
+
 }

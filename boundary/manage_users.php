@@ -12,6 +12,11 @@ $action = $_GET['action'] ?? '';
 $edit_id = $_GET['edit'] ?? null;
 $users = AdminController::getAllUsers();
 $edit_user = $edit_id ? AdminController::getUserById($edit_id) : null;
+$message = '';
+
+if (isset($_POST['export_users'])) {
+    AdminController::exportUserReportPDF();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['create'])) {
@@ -21,9 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['update'])) {
-        AdminController::updateUser($_POST['id'], $_POST['email'], $_POST['user_type']);
-        header("Location: manage_users.php");
-        exit();
+        $result = AdminController::updateUser($_POST['id'], $_POST['email'], $_POST['user_type']);
+        if ($result === true) {
+            header("Location: manage_users.php");
+            exit();
+        } else {
+            $message = $result;
+        }
     }
 }
 
@@ -50,12 +59,16 @@ if ($action === 'unsuspend' && isset($_GET['id'])) {
 <html>
 <head>
     <title>Manage Users</title>
-    <link rel="stylesheet" href="../css/admin.css">
+	<link rel="stylesheet" href="../css/admin.css">
 </head>
 
-    <body>
-	<div class="container">
+<body>
+<div class="container">
     <h2>Manage Users</h2>
+
+    <?php if (!empty($message)): ?>
+        <div class="message"><?= htmlspecialchars($message) ?></div>
+    <?php endif; ?>
 
     <h3><?= $edit_user ? 'Edit User' : 'Create New User' ?></h3>
     <form method="post">
@@ -73,6 +86,10 @@ if ($action === 'unsuspend' && isset($_GET['id'])) {
         <button type="submit" name="<?= $edit_user ? 'update' : 'create' ?>">
             <?= $edit_user ? 'Update' : 'Create' ?>
         </button>
+    </form>
+
+    <form method="post" style="margin-top: 20px;">
+        <button type="submit" name="export_users">Export All Users</button>
     </form>
 
     <h3>Existing Users</h3>
@@ -106,5 +123,4 @@ if ($action === 'unsuspend' && isset($_GET['id'])) {
     <p><a href="dashboard_admin.php">← Back to Dashboard</a></p>
 	</div>
 </body>
-
 </html>
