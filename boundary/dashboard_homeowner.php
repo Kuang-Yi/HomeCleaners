@@ -24,6 +24,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'H') {
             <a href="view_services.php">Browse Services</a>
             <a href="view_bookings.php">My Bookings</a>
             <a href="view_shortlist.php">My Shortlist</a>
+			<a href="submit_review.php" class="btn">Submit a Review</a>
             <a href="../logout.php" class="logout-link">Logout</a>
         </nav>
     </aside>

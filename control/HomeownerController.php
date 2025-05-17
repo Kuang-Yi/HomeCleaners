@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../entity/Service.php';
 require_once __DIR__ . '/../entity/Shortlist.php';
 require_once __DIR__ . '/../entity/Booking.php';
+require_once __DIR__ . '/../entity/Review.php';
 
 class HomeownerController {
     // Get all available services
@@ -78,5 +79,32 @@ class HomeownerController {
     global $pdo;
     return Shortlist::remove($pdo, $homeowner_id, $service_id);
 }
+
+    // ✅ NEW: Get completed bookings that haven't been reviewed
+    public static function getCompletedBookingsWithoutReview($homeownerId) {
+        global $pdo;
+        $stmt = $pdo->prepare("
+            SELECT b.id, s.title, b.booking_datetime
+            FROM bookings b
+            JOIN services s ON b.service_id = s.id
+            WHERE b.homeowner_id = ?
+              AND b.status = 'completed'
+              AND NOT EXISTS (
+                  SELECT 1 FROM reviews r WHERE r.booking_id = b.id
+              )
+            ORDER BY b.booking_datetime DESC
+        ");
+        $stmt->execute([$homeownerId]);
+        return $stmt->fetchAll();
+    }
+
+    // ✅ NEW: Submit a review
+    public static function submitReview($bookingId, $rating, $comment) {
+        global $pdo;
+        if (Review::existsForBooking($pdo, $bookingId)) {
+            return "Review already exists for this booking.";
+        }
+        return Review::create($pdo, $bookingId, $rating, $comment);
+    }
 
 }

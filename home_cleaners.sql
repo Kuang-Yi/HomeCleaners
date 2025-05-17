@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 14, 2025 at 03:44 AM
+-- Generation Time: May 17, 2025 at 08:24 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `bookings` (
   PRIMARY KEY (`id`),
   KEY `homeowner_id` (`homeowner_id`),
   KEY `service_id` (`service_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `bookings`
@@ -64,7 +64,8 @@ INSERT INTO `bookings` (`id`, `homeowner_id`, `service_id`, `status`, `created_a
 (16, 9, 12, 'rejected', '2025-05-08 13:51:10', '2025-05-14 12:00:00'),
 (17, 11, 15, 'pending', '2025-05-09 18:52:13', '2025-05-15 16:00:00'),
 (20, 14, 19, 'completed', '2025-05-13 10:42:30', '2025-06-10 17:00:00'),
-(21, 14, 18, 'confirmed', '2025-05-13 11:37:31', '2025-06-05 18:00:00');
+(21, 14, 18, 'confirmed', '2025-05-13 11:37:31', '2025-06-05 18:00:00'),
+(22, 20, 20, 'completed', '2025-05-17 16:15:26', '2025-07-17 17:00:00');
 
 -- --------------------------------------------------------
 
@@ -78,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `categories`
@@ -87,11 +88,35 @@ CREATE TABLE IF NOT EXISTS `categories` (
 INSERT INTO `categories` (`id`, `name`) VALUES
 (1, 'House'),
 (3, 'Toilet'),
-(4, 'Carpet'),
-(5, 'Car'),
+(4, 'Test'),
+(5, 'Cars'),
 (7, 'Lawn'),
-(11, 'Others'),
+(13, 'Others'),
 (9, 'Window');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reviews`
+--
+
+DROP TABLE IF EXISTS `reviews`;
+CREATE TABLE IF NOT EXISTS `reviews` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `booking_id` int NOT NULL,
+  `rating` int DEFAULT NULL,
+  `comment` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `booking_id` (`booking_id`)
+) ;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`id`, `booking_id`, `rating`, `comment`, `created_at`) VALUES
+(1, 22, 5, 'Very Good', '2025-05-17 08:19:25');
 
 -- --------------------------------------------------------
 
@@ -114,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `services` (
   PRIMARY KEY (`id`),
   KEY `cleaner_id` (`cleaner_id`),
   KEY `category_id` (`category_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `services`
@@ -131,7 +156,8 @@ INSERT INTO `services` (`id`, `cleaner_id`, `title`, `description`, `price`, `ca
 (14, 10, 'Window Polishing', 'Polish all the windows in ur house', 200.00, 9, 'per_job', '2025-05-09 18:49:24', 0, 0),
 (15, 10, 'Washing Toilet', 'Wash the whole toilet', 50.00, 3, 'per_job', '2025-05-09 18:50:16', 1, 0),
 (19, 13, 'Cut Grass', 'cut ur grass for u :D', 303.00, 7, 'per_job', '2025-05-13 10:40:54', 1, 1),
-(18, 13, 'Wipe Window', 'wipe ur window for u', 123.00, 9, 'per_job', '2025-05-13 10:39:50', 0, 1);
+(18, 13, 'Wipe Window', 'wipe ur window for u', 123.00, 9, 'per_job', '2025-05-13 10:39:50', 0, 1),
+(20, 19, 'Car Clean', 'Car cleaning for u', 200.00, 5, 'per_job', '2025-05-17 01:56:05', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -148,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `shortlists` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `homeowner_id` (`homeowner_id`,`service_id`),
   KEY `service_id` (`service_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `shortlists`
@@ -165,6 +191,7 @@ INSERT INTO `shortlists` (`id`, `homeowner_id`, `service_id`, `created_at`) VALU
 (17, 11, 16, '2025-05-09 18:52:03'),
 (16, 9, 12, '2025-05-08 13:42:14'),
 (18, 14, 18, '2025-05-13 10:41:25'),
+(23, 20, 20, '2025-05-17 16:15:17'),
 (21, 14, 1, '2025-05-13 11:20:09'),
 (22, 14, 2, '2025-05-13 11:20:17');
 
@@ -181,27 +208,30 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) NOT NULL,
   `user_type` enum('C','H','A','P') NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `account_status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `password`, `user_type`, `created_at`) VALUES
-(1, 'cleaner@gmail.com', '$2y$10$W26PcTPSpuvWIvA7HedLheaW/PHFNomqf.5wV.PXJqHxDuOF0IGsK', 'C', '2025-05-04 00:07:50'),
-(2, 'admin@gmail.com', '$2y$10$W26PcTPSpuvWIvA7HedLheaW/PHFNomqf.5wV.PXJqHxDuOF0IGsK', 'A', '2025-05-04 00:07:51'),
-(3, 'platform@gmail.com', '$2y$10$W26PcTPSpuvWIvA7HedLheaW/PHFNomqf.5wV.PXJqHxDuOF0IGsK', 'P', '2025-05-04 00:07:52'),
-(4, 'homeowner@gmail.com', '$2y$10$5qtGmE9QiI4DD3nCNFdy3OBsgalvRkDlsbBcLJkPTuItDl/sLqPE.', 'H', '2025-05-04 00:47:40'),
-(5, 'cleaner2@gmail.com', '$2y$10$59HWF.KBWTy6vb.5eS2iMOqg92uFPpmh4s63Zi40XaP0Km1k6pQpq', 'C', '2025-05-05 12:42:30'),
-(6, 'homeowner2@gmail.com', '$2y$10$ConnCVhXKMEac60WGF0xT.poiHIOMOfcrPMealKx0uNchD5oQIQOO', 'H', '2025-05-05 15:46:40'),
-(8, 'cleaner3@gmail.com', '$2y$10$9SOuBjFLCheUIcWgTJCAOuhqusJqSUWj6e3Oo60xIgZwqmIMnWHfS', 'C', '2025-05-08 13:25:33'),
-(9, 'homeowner3@gmail.com', '$2y$10$.z0fNpXoA06IrR4X3FqAFufPd91/eJ4IZ7gvZwNSLArEIsGNovRU2', 'H', '2025-05-08 13:25:43'),
-(10, 'cleaner4@gmail.com', '$2y$10$TYEDlXHmiNvl4k4rC1VyaexjCDlhfNfRKQCJ86a8/NtALypy42i/O', 'C', '2025-05-09 16:21:59'),
-(11, 'homeowner4@gmail.com', '$2y$10$LNfsQNolI84C8g8lW.uJlO5l.Rwfxdm8p77BA2t2EYdxFMnpv8vb.', 'H', '2025-05-09 16:22:28'),
-(13, 'cleaner5@gmail.com', '$2y$10$62wiE7ERMpawIh/VIL2Cg.nCcOG.hwKUBS6Ya7dKAAP59Vve69fNG', 'C', '2025-05-13 10:37:32'),
-(14, 'homeowner5@gmail.com', '$2y$10$66BNETh2GMBOM21pCdfMSeET.q79sxB6CdMQMDVfTM8Q3bT6XrQSe', 'H', '2025-05-13 10:37:45');
+INSERT INTO `users` (`id`, `email`, `password`, `user_type`, `created_at`, `account_status`) VALUES
+(1, 'cleaner@gmail.com', '$2y$10$W26PcTPSpuvWIvA7HedLheaW/PHFNomqf.5wV.PXJqHxDuOF0IGsK', 'C', '2025-05-04 00:07:50', 1),
+(2, 'admin@gmail.com', '$2y$10$W26PcTPSpuvWIvA7HedLheaW/PHFNomqf.5wV.PXJqHxDuOF0IGsK', 'A', '2025-05-04 00:07:51', 1),
+(3, 'platform@gmail.com', '$2y$10$W26PcTPSpuvWIvA7HedLheaW/PHFNomqf.5wV.PXJqHxDuOF0IGsK', 'P', '2025-05-04 00:07:52', 1),
+(4, 'homeowner@gmail.com', '$2y$10$5qtGmE9QiI4DD3nCNFdy3OBsgalvRkDlsbBcLJkPTuItDl/sLqPE.', 'H', '2025-05-04 00:47:40', 1),
+(5, 'cleaner2@gmail.com', '$2y$10$59HWF.KBWTy6vb.5eS2iMOqg92uFPpmh4s63Zi40XaP0Km1k6pQpq', 'C', '2025-05-05 12:42:30', 1),
+(6, 'homeowner2@gmail.com', '$2y$10$ConnCVhXKMEac60WGF0xT.poiHIOMOfcrPMealKx0uNchD5oQIQOO', 'H', '2025-05-05 15:46:40', 1),
+(8, 'cleaner3@gmail.com', '$2y$10$9SOuBjFLCheUIcWgTJCAOuhqusJqSUWj6e3Oo60xIgZwqmIMnWHfS', 'C', '2025-05-08 13:25:33', 1),
+(16, 'cleaner6@gmail.com', '$2y$10$2.7M7M8FMSxatGa5BJ4xV.JqHGtFTiC5QmpsCOfNdJHDZGnZ6Z.hC', 'C', '2025-05-15 21:05:00', 1),
+(10, 'cleaner4@gmail.com', '$2y$10$TYEDlXHmiNvl4k4rC1VyaexjCDlhfNfRKQCJ86a8/NtALypy42i/O', 'C', '2025-05-09 16:21:59', 1),
+(11, 'homeowner4@gmail.com', '$2y$10$LNfsQNolI84C8g8lW.uJlO5l.Rwfxdm8p77BA2t2EYdxFMnpv8vb.', 'H', '2025-05-09 16:22:28', 1),
+(13, 'cleaner5@gmail.com', '$2y$10$62wiE7ERMpawIh/VIL2Cg.nCcOG.hwKUBS6Ya7dKAAP59Vve69fNG', 'C', '2025-05-13 10:37:32', 1),
+(14, 'homeowner5@gmail.com', '$2y$10$66BNETh2GMBOM21pCdfMSeET.q79sxB6CdMQMDVfTM8Q3bT6XrQSe', 'H', '2025-05-13 10:37:45', 1),
+(20, 'homeowner7@gmail.com', '$2y$10$7CQGHuJP5Ga97OijEH6PBOMw1dpZOT.iZomaJ29LHSEDA2eY3D4bG', 'H', '2025-05-17 16:00:26', 1),
+(19, 'cleaner7@gmail.com', '$2y$10$e.CsB0WS.Ll5r0gPw9sdT./9bEiJRL2KOxtSQB/N1EAkz6iJoNOci', 'C', '2025-05-17 01:44:47', 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -36,6 +36,7 @@ $pending_review_count = $stmt->fetchColumn();
             <a href="add_service.php">Add Service</a>
             <a href="manage_services.php">My Services</a>
             <a href="view_cleaner_bookings.php">Bookings</a>
+			<a href="view_reviews.php" class="btn">View My Reviews</a>
             <a href="../logout.php" class="logout-link">Logout</a>
         </nav>
     </aside>
