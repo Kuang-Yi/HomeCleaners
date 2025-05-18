@@ -17,17 +17,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (PlatformController::addCategory($name)) {
             $message = "Category '$name' added successfully.";
         } else {
-            $message = "⚠️ Failed to add category. It may already exist.";
+            $message = "Failed to add category. It may already exist.";
         }
         $categories = PlatformController::getAllCategoriesWithServiceCount();
-    } elseif (!empty($_POST['edit_category_id']) && !empty($_POST['new_category_name'])) {
+    } elseif (!empty($_POST['edit_category_id'])) {
         $id = $_POST['edit_category_id'];
-        $newName = trim($_POST['new_category_name']);
-        $result = PlatformController::updateCategory($id, $newName);
-        if ($result === true) {
-            $message = "Category updated successfully.";
+        $newName = trim($_POST['new_category_name'] ?? '');
+    
+        if (empty($newName)) {
+            $message = "Name is required.";
         } else {
-            $message = $result;
+            $result = PlatformController::updateCategory($id, $newName);
+            if ($result === true) {
+                $message = "Category updated successfully.";
+            } else {
+                $message = $result;
+            }
         }
         $categories = PlatformController::getAllCategoriesWithServiceCount();
     } elseif (!empty($_POST['delete_category_id'])) {
@@ -35,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (PlatformController::deleteCategory($id)) {
             $message = "Category deleted successfully.";
         } else {
-            $message = "❌ Failed to delete category. It may be in use.";
+            $message = "Failed to delete category. It may be in use.";
         }
         $categories = PlatformController::getAllCategoriesWithServiceCount();
     }
