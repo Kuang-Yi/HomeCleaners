@@ -25,6 +25,10 @@ class PlatformController {
     public static function getReportData($type, $value) {
         return Report::fetchBookingsByPeriod($type, $value);
     }
+
+    public static function generateBookingReportPDF($type, $value, $bookings) {
+        return Report::generatePDF($type, $value, $bookings);
+    }
 	
 	public static function updateCategory($id, $newName) {
     global $pdo;

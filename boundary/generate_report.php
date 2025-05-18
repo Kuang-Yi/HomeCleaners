@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once '../config/db.php';
-require_once '../lib/fpdf/fpdf.php';
 require_once '../control/PlatformController.php';
 
 if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'P') {
@@ -19,31 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $previewBookings = PlatformController::getReportData($selectedType, $selectedValue);
 
     if (isset($_POST['download_pdf'])) {
-        $pdf = new FPDF('L', 'mm', 'A4');
-        $pdf->AddPage();
-        $pdf->SetFont('Arial','B',14);
-        $pdf->Cell(0,10,'Booking Report - '.ucfirst($selectedType) . ' (' . $selectedValue . ')',0,1,'C');
-
-        $pdf->SetFont('Arial','B',9);
-        $headers = ['Service','Cleaner Email','Homeowner Email','Category','Price','Pricing','Status','Order Date & Time'];
-        foreach ($headers as $h) {
-            $pdf->Cell(45,10,$h,1);
-        }
-        $pdf->Ln();
-
-        $pdf->SetFont('Arial','',9);
-        foreach ($previewBookings as $b) {
-            $pdf->Cell(45,10,substr($b['title'], 0, 30),1);
-            $pdf->Cell(45,10,substr($b['cleaner_email'], 0, 40),1);
-            $pdf->Cell(45,10,substr($b['homeowner_email'], 0, 40),1);
-            $pdf->Cell(45,10,$b['category_name'],1);
-            $pdf->Cell(45,10,$b['price'],1);
-            $pdf->Cell(45,10,$b['pricing_type'],1);
-            $pdf->Cell(45,10,$b['status'],1);
-            $pdf->Cell(45,10,substr($b['booking_datetime'], 0, 16),1);
-            $pdf->Ln();
-        }
-
+        $pdf = PlatformController::generateBookingReportPDF($selectedType, $selectedValue, $previewBookings);
         $filename = "Booking_Report_" . $selectedType . "_" . str_replace(['-', 'W'], '_', $selectedValue) . ".pdf";
         $pdf->Output('D', $filename);
         exit();

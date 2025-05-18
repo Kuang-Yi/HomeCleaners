@@ -1,5 +1,6 @@
 <?php
 require_once '../config/db.php';
+require_once '../lib/fpdf/fpdf.php';
 
 class Report {
     public static function getAvailableBookingPeriods() {
@@ -71,5 +72,42 @@ class Report {
         ");
         $stmt->execute([$start, $end]);
         return $stmt->fetchAll();
+    }
+
+
+    public static function generatePDF($type, $value, $bookings) {
+        require_once '../lib/fpdf/fpdf.php';
+    
+        $pdf = new FPDF('L', 'mm', 'A4'); // Landscape mode
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(0, 10, 'Booking Report - ' . ucfirst($type) . ' (' . $value . ')', 0, 1, 'C');
+    
+        // Define headers and column widths
+        $headers = ['Service', 'Cleaner Email', 'Homeowner Email', 'Category', 'Price', 'Pricing', 'Status', 'Order Date & Time'];
+        $widths  = [32,       45,              45,                32,         20,      25,        25,        58];
+    
+        // Header row
+        $pdf->SetFont('Arial', 'B', 9);
+        foreach ($headers as $i => $h) {
+            $pdf->Cell($widths[$i], 10, $h, 1);
+        }
+        $pdf->Ln();
+    
+        // Data rows
+        $pdf->SetFont('Arial', '', 9);
+        foreach ($bookings as $b) {
+            $pdf->Cell($widths[0], 10, substr($b['title'], 0, 30), 1);
+            $pdf->Cell($widths[1], 10, substr($b['cleaner_email'], 0, 40), 1);
+            $pdf->Cell($widths[2], 10, substr($b['homeowner_email'], 0, 40), 1);
+            $pdf->Cell($widths[3], 10, $b['category_name'], 1);
+            $pdf->Cell($widths[4], 10, number_format($b['price'], 2), 1);
+            $pdf->Cell($widths[5], 10, $b['pricing_type'], 1);
+            $pdf->Cell($widths[6], 10, $b['status'], 1);
+            $pdf->Cell($widths[7], 10, substr($b['booking_datetime'], 0, 16), 1);
+            $pdf->Ln();
+        }
+    
+        return $pdf;
     }
 }
